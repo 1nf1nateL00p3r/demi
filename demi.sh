@@ -1,9 +1,11 @@
 #!/bin/bash
 clear
+killall - 9 watch
+gnome-terminal --command="watch -n 2 'cat -A bambam.txt'"
 nmap_path=`which nmap`
 file_name=`echo $1 | awk -F "/" '{print $1}'`
-
-$nmap_path -sT -p 80 --open $1 -oG - | awk '$4=="Ports:"{print $2,":"$5}' | awk -F "/" '{print $1}' > output_`echo $1 | awk -F "/" '{print $1}'`.txt
+echo 'running nmap'
+$nmap_path -T5 -sT -p 80 --open $1 -oG - | awk '$4=="Ports:"{print $2,":"$5}' | awk -F "/" '{print $1}' > output_`echo $1 | awk -F "/" '{print $1}'`.txt
 
  #file_content=`cat output_$file_name.txt`
  IFS=$'\r\n' GLOBIGNORE='*' command eval  'arr=($(cat output_$file_name.txt))'
@@ -11,7 +13,7 @@ $nmap_path -sT -p 80 --open $1 -oG - | awk '$4=="Ports:"{print $2,":"$5}' | awk 
 
 
 
-
+echo 'testing ips'
 for i in "${arr[@]}"
 do
 
