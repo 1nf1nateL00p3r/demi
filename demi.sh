@@ -14,16 +14,17 @@ echo 'Nmap finished'
 for i in "${arr[@]}"
 do
 
-	#sh ./mt.sh  echo -n "${arr[3]//[[:space:]]/}"
 	echo  'Testing : '$i
 	ver=`curl --connect-timeout 3 -m 3 -s $i | grep -i RouterOS | awk -F ">" {'print $2'} | awk -F "<" {'print $1'} | head -2 | grep -v "configura" | awk -F "v" {'print $2'} | awk -F "." {'print $2"."$3'}` 
 	ver_total=`curl --connect-timeout 3 -m 3 -s $i | grep -i RouterOS | awk -F ">" {'print $2'} | awk -F "<" {'print $1'} | head -2 | grep -v "configura" | awk -F "v" {'print $2'} `
 	version_ok=38.5
+	version_ok2=6.0
+	echo $ver_total
 if [ -z "$ver" ]
 	then
 		echo "No Mikrotik" #> /dev/null
 	else
-		if [[ "$ver" < "$version_ok" ]]
+		if [[ "$ver" < "$version_ok" ]] && [[ "$ver_total" > "$version_ok2" ]];
 		then
 			ip=`echo $i | awk -F ":" '{print $1}'`
 			port=`echo $i | awk -F ":" '{print $2}'`
@@ -37,3 +38,7 @@ if [ -z "$ver" ]
 		fi
 fi
 done
+
+killall -9 watch
+clear
+echo "Finish"
