@@ -39,6 +39,4 @@ if [ -z "$ver" ]
 fi
 done
 
-killall -9 watch
-clear
 echo "Finish"
